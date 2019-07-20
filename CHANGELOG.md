@@ -2,6 +2,12 @@
 
 <!-- cl-start -->
 
+# [2.1.1](https://github.com/Microsoft/VoTT/compare/v2.1.0...v2.1.1) (07-20-2019)
+[GitHub Release](https://github.com/Microsoft/VoTT/releases/tag/v2.1.1)
+
+- feat: Add incomplete Chinese support
+- feat: Add support for importing multiple tags at once
+
 # [2.1.0](https://github.com/Microsoft/VoTT/compare/v2.0.0...v2.1.0) (04-29-2019)
 [GitHub Release](https://github.com/Microsoft/VoTT/releases/tag/v2.1.0)
 
