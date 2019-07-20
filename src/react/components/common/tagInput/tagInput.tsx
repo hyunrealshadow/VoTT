@@ -45,6 +45,7 @@ export interface ITagInputState {
     clickedColor: boolean;
     showColorPicker: boolean;
     addTags: boolean;
+    importTags: boolean;
     searchTags: boolean;
     searchQuery: string;
     selectedTag: ITag;
@@ -64,6 +65,7 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
         clickedColor: false,
         showColorPicker: false,
         addTags: this.props.showTagInputBox,
+        importTags: false,
         searchTags: this.props.showSearchBox,
         searchQuery: "",
         selectedTag: null,
@@ -82,7 +84,8 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
                     <span className="condensed-list-title tag-input-title">Tags</span>
                     <TagInputToolbar
                         selectedTag={this.state.selectedTag}
-                        onAddTags={() => this.setState({ addTags: !this.state.addTags })}
+                        onImportTags={() => this.setState({ importTags: !this.state.importTags, addTags: false })}
+                        onAddTags={() => this.setState({ addTags: !this.state.addTags, importTags: false })}
                         onSearchTags={() => this.setState({
                             searchTags: !this.state.searchTags,
                             searchQuery: "",
@@ -112,6 +115,19 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
                     <div className="tag-input-items">
                         {this.renderTagItems()}
                     </div>
+                    {
+                        this.state.importTags &&
+                        <div className="tag-input-text-input-row new-tag-input">
+                            <input
+                                className="tag-input-box"
+                                type="text"
+                                onKeyDown={this.onImportTagsKeyDown}
+                                placeholder="Import some tags"
+                                autoFocus={true}
+                            />
+                            <i className="tag-input-row-icon fas fa-tag" />
+                        </div>
+                    }
                     {
                         this.state.addTags &&
                         <div className="tag-input-text-input-row new-tag-input">
@@ -426,6 +442,36 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
         }
     }
 
+    private onImportTagsKeyDown = (event) => {
+        if (event.key === "Enter") {
+            const tags = event.target.value.split(",");
+            console.log(tags);
+            const verifiedTags = [];
+            tags.map((tag, index) => {
+                const newTag: ITag = {
+                    name: tag,
+                    color: this.getNextColorWithIndex(index),
+                };
+                if (newTag.name.length && !this.state.tags.find((t) => t.name === newTag.name)) {
+                    verifiedTags.push(newTag);
+                } else if (!newTag.name.length) {
+                    toast.warn(strings.tags.warnings.emptyName);
+                } else {
+                    toast.warn(`${strings.tags.warnings.existingName} ${tag}`);
+                }
+            });
+            if (verifiedTags.length) {
+                event.target.value = "";
+                this.addTags(verifiedTags);
+            }
+        }
+        if (event.key === "Escape") {
+            this.setState({
+                addTags: false,
+            });
+        }
+    }
+
     private onAddTagKeyDown = (event) => {
         if (event.key === "Enter") {
             // validate and add
@@ -466,9 +512,43 @@ export class TagInput extends React.Component<ITagInputProps, ITagInputState> {
         }
     }
 
+    private getNextColorWithIndex = (index: number) => {
+        const tags = this.state.tags;
+        if (tags.length > 0) {
+            const lastColor = tags[tags.length - 1].color;
+            const lastIndex = tagColors.findIndex((color) => color === lastColor);
+            let newIndex;
+            if (lastIndex > -1) {
+                newIndex = (lastIndex + 1 + index) % tagColors.length;
+            } else {
+                newIndex = randomIntInRange(0, tagColors.length - 1);
+            }
+            return tagColors[newIndex];
+        } else {
+            return tagColors[index];
+        }
+    }
+
     private addTag = (tag: ITag) => {
         if (!this.state.tags.find((t) => t.name === tag.name)) {
             const tags = [...this.state.tags, tag];
+            this.setState({
+                tags,
+            }, () => this.props.onChange(tags));
+        }
+    }
+
+    private addTags = (tags: ITag[]) => {
+        const verifiedTags: ITag[] = [];
+
+        tags.map((tag) => {
+            if (!this.state.tags.find((t) => t.name === tag.name)) {
+                verifiedTags.push(tag);
+            }
+        });
+        if (verifiedTags.length) {
+            const tags = [...this.state.tags, ...verifiedTags];
+            console.log(tags);
             this.setState({
                 tags,
             }, () => this.props.onChange(tags));

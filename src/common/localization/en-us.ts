@@ -146,6 +146,7 @@ export const english: IAppStrings = {
             unknownTagName: "Unknown",
         },
         toolbar: {
+            import: "Import some tags",
             add: "Add new tag",
             search: "Search tags",
             edit: "Edit tag",

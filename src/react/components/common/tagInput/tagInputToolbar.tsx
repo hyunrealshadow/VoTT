@@ -7,6 +7,7 @@ import "./tagInput.scss";
 export interface ITagInputToolbarProps {
     /** Currently selected tag */
     selectedTag: ITag;
+    onImportTags: () => void;
     /** Function to call when add tags button is clicked */
     onAddTags: () => void;
     /** Function to call when search tags button is clicked */
@@ -53,6 +54,12 @@ export default class TagInputToolbar extends React.Component<ITagInputToolbarPro
     private getToolbarItems = (): ITagInputToolbarItemProps[] => {
         return [
             {
+                displayName: strings.tags.toolbar.import,
+                className: "import",
+                icon: "fa-file-import",
+                handler: this.handleImport,
+            },
+            {
                 displayName: strings.tags.toolbar.add,
                 className: "plus",
                 icon: "fa-plus-circle",
@@ -95,6 +102,10 @@ export default class TagInputToolbar extends React.Component<ITagInputToolbarPro
                 handler: this.handleDelete,
             },
         ];
+    }
+
+    private handleImport = () => {
+        this.props.onImportTags();
     }
 
     private handleAdd = () => {

@@ -147,6 +147,7 @@ export const spanish: IAppStrings = {
             unknownTagName: "Desconocido",
         },
         toolbar: {
+            import: "Importar algunas etiquetas",
             add: "Agregar nueva etiqueta",
             search: "Buscar entre etiquetas",
             edit: "Editar etiqueta",

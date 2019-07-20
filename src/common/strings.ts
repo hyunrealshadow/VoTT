@@ -128,6 +128,7 @@ export interface IAppStrings {
             color: string;
         }
         toolbar: {
+            import: string;
             add: string;
             search: string;
             lock: string;

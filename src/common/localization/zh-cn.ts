@@ -146,6 +146,7 @@ export const chinese: IAppStrings = {
             unknownTagName: "Unknown",
         },
         toolbar: {
+            import: "导入标签",
             add: "添加新标签",
             search: "搜索标签",
             edit: "编辑标签",
